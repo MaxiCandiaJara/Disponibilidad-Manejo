@@ -214,9 +214,27 @@ def Elegir():
 
     # Busca a un hermano y lo manda a la funcion mensaje
 
+    # Agregamos ahora que se pueda dar el mensaje completo de todos los hermanos y ordenados!
+    info = CargarInfo()
+    print("Para que mes estas haciendo el programa?")
+    mes = input(": ").capitalize()
+
+    if input("Todos los mensajes? (s/n) \n :").lower() == "s":
+
+        for i in info:  
+            nombre = i["Nombre"]
+            print(f"\n\n\n --------------------------------------------------------")
+            print(f"Mensaje para: {nombre}")
+            Mensaje(Hermano.from_dict(i), mes)
+            
+            
+        input()
+        return
+
+
     nombre = input("A quien buscas?: ").lower()
 
-    info = CargarInfo()
+
 
     c = 0
 
@@ -225,10 +243,12 @@ def Elegir():
 
         if i["Nombre"] == nombre:
             print("Encontrado!")
-            Mensaje(Hermano.from_dict(i))
+
+                
+            Mensaje(Hermano.from_dict(i), mes)
 
 
-
+            input()
             break
 
         c += 1
@@ -317,7 +337,7 @@ def Actualizar(info):
     with open("personas.json", "w") as archivo: 
       json.dump(info, archivo, indent=4)
 
-def Mensaje(Buscar:Hermano):
+def Mensaje(Buscar:Hermano, mes:str):
 
     #Verifica si el mensaje se ha mandado con aterioridad. Si es asi avisa. Despues manda un mensaje personalizado diciendo la disponibilidad del hermano. 
 
@@ -340,16 +360,20 @@ def Mensaje(Buscar:Hermano):
 
 
 
-    cmd("cls")
 
 
-    print(f"""
-    Hola, Estamos confirmando su disponibilidad para este mes. 
-    Usted nos dijo que {("podia los " + ", ".join(Buscar.rMañana())) if len(str(Buscar.rMañana()[0])) > 0 else "no podia"} en las Mañanas. Y que {("podia los " + ", ".join(Buscar.rTarde())) if len(Buscar.rTarde()[0]) > 0 else "no podia"} en las tardes. 
-    {f"Nos agrego el comentario de: {Buscar.rComentario()} " if len(Buscar.rComentario()) != 0 else " "}.
-    Confirmar si mantendrá esta disponibilidad o la cambiará. *Si no responde a este mensaje vamos a asumir que la mantiene*""")
+
+    mensaje = (
+    f"Hola, estamos confirmando su disponibilidad para el mes de {mes}. "
+    f"Usted nos dijo que {('podía los ' + ', '.join(Buscar.rMañana())) if len(str(Buscar.rMañana()[0])) > 0 else 'no podía'} en las mañanas, "
+    f"y que {('podía los ' + ', '.join(Buscar.rTarde())) if len(Buscar.rTarde()[0]) > 0 else 'no podía'} en las tardes. "
+    f"{'Nos agregó el comentario de: ' + Buscar.rComentario() if len(Buscar.rComentario()) != 0 else ''} "
+    "Confirmar si mantendrá esta disponibilidad o la cambiará. *Si no responde a este mensaje vamos a asumir que la mantiene.*"
+    )
+
+    print(mensaje)
     
-    input()
+
 
 if __name__ == "__main__":
     main()
